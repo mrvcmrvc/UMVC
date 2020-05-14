@@ -2,99 +2,102 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class FloatingJoystick : Joystick
+namespace UMVC
 {
-    private Canvas _canvas;
-    private CanvasScaler _scaler;
-    public RectTransform _safeArea;
-
-    public bool AlwaysVisible;
-    public float JoystickBaseMoveThreshold;
-    public float BaseFixedDistance;
-
-    protected override void Start()
+    public class FloatingJoystick : Joystick
     {
-        base.Start();
+        private Canvas _canvas;
+        private CanvasScaler _scaler;
+        public RectTransform _safeArea;
 
-        _safeArea = transform.parent.GetComponent<RectTransform>();
-        _canvas = GetComponentInParent<Canvas>();
-        _scaler = GetComponentInParent<CanvasScaler>();
+        public bool AlwaysVisible;
+        public float JoystickBaseMoveThreshold;
+        public float BaseFixedDistance;
 
-        SetJoystickPos(new Vector3(Screen.width / 2.0f, Screen.height * BaseFixedDistance));
+        protected override void Start()
+        {
+            base.Start();
 
-        if (!AlwaysVisible)
-            background.gameObject.SetActive(false);
-    }
+            _safeArea = transform.parent.GetComponent<RectTransform>();
+            _canvas = GetComponentInParent<Canvas>();
+            _scaler = GetComponentInParent<CanvasScaler>();
 
-    public override void OnPointerDown(PointerEventData eventData)
-    {
-        SetJoystickPos(eventData.position);
+            SetJoystickPos(new Vector3(Screen.width / 2.0f, Screen.height * BaseFixedDistance));
 
-        background.gameObject.SetActive(true);
+            if (!AlwaysVisible)
+                background.gameObject.SetActive(false);
+        }
 
-        base.OnPointerDown(eventData);
-    }
+        public override void OnPointerDown(PointerEventData eventData)
+        {
+            SetJoystickPos(eventData.position);
 
-    private void SetJoystickPos(Vector3 screenPos)
-    {
-        Vector3 vpPoint = Camera.main.ScreenToViewportPoint(screenPos);
+            background.gameObject.SetActive(true);
 
-        //float bottomDist = -1 * _canvas.pixelRect.height * _safeArea.anchorMin.y;
+            base.OnPointerDown(eventData);
+        }
 
-        //Vector2 projectionArea = _safeArea.rect.size;
-        //projectionArea.y += bottomDist;
+        private void SetJoystickPos(Vector3 screenPos)
+        {
+            Vector3 vpPoint = Camera.main.ScreenToViewportPoint(screenPos);
 
-        background.anchoredPosition = ((RectTransform)_canvas.transform).rect.size * vpPoint;
-    }
+            //float bottomDist = -1 * _canvas.pixelRect.height * _safeArea.anchorMin.y;
 
-    public override void OnDrag(PointerEventData eventData)
-    {
-        base.OnDrag(eventData);
+            //Vector2 projectionArea = _safeArea.rect.size;
+            //projectionArea.y += bottomDist;
 
-        bool updateJoystickPos = CheckForFingerDistance(eventData, out float deltaMove);
+            background.anchoredPosition = ((RectTransform)_canvas.transform).rect.size * vpPoint;
+        }
 
-        if (updateJoystickPos)
-            MoveJoystickTowardsPos(eventData.position, deltaMove);
-    }
+        public override void OnDrag(PointerEventData eventData)
+        {
+            base.OnDrag(eventData);
 
-    private bool CheckForFingerDistance(PointerEventData eventData, out float deltaMove)
-    {
-        Vector2 joystickScreenPos = RectTransformUtility.WorldToScreenPoint(Cam, background.position);
+            bool updateJoystickPos = CheckForFingerDistance(eventData, out float deltaMove);
 
-        float curDist = Vector2.Distance(joystickScreenPos, eventData.position);
+            if (updateJoystickPos)
+                MoveJoystickTowardsPos(eventData.position, deltaMove);
+        }
 
-        float scaledThreshold = JoystickBaseMoveThreshold * (Screen.width / _scaler.referenceResolution.x);
+        private bool CheckForFingerDistance(PointerEventData eventData, out float deltaMove)
+        {
+            Vector2 joystickScreenPos = RectTransformUtility.WorldToScreenPoint(Cam, background.position);
 
-        deltaMove = curDist - scaledThreshold;
-        if (deltaMove < 0)
-            deltaMove = 0;
+            float curDist = Vector2.Distance(joystickScreenPos, eventData.position);
 
-        if (curDist >= scaledThreshold)
-            return true;
+            float scaledThreshold = JoystickBaseMoveThreshold * (Screen.width / _scaler.referenceResolution.x);
 
-        return false;
-    }
+            deltaMove = curDist - scaledThreshold;
+            if (deltaMove < 0)
+                deltaMove = 0;
 
-    private void MoveJoystickTowardsPos(Vector2 pressPosition, float deltaMove)
-    {
-        Vector2 joystickScreenPos = RectTransformUtility.WorldToScreenPoint(Cam, background.position);
+            if (curDist >= scaledThreshold)
+                return true;
 
-        Vector2 dir = (pressPosition - joystickScreenPos).normalized;
+            return false;
+        }
 
-        Vector2 movement = dir * deltaMove;
+        private void MoveJoystickTowardsPos(Vector2 pressPosition, float deltaMove)
+        {
+            Vector2 joystickScreenPos = RectTransformUtility.WorldToScreenPoint(Cam, background.position);
 
-        Vector2 newScreenPos = joystickScreenPos + movement;
+            Vector2 dir = (pressPosition - joystickScreenPos).normalized;
 
-        SetJoystickPos(newScreenPos);
-    }
+            Vector2 movement = dir * deltaMove;
 
-    public override void OnPointerUp(PointerEventData eventData)
-    {
-        if (!AlwaysVisible)
-            background.gameObject.SetActive(false);
+            Vector2 newScreenPos = joystickScreenPos + movement;
 
-        SetJoystickPos(new Vector3(Screen.width / 2.0f, Screen.height * BaseFixedDistance));
+            SetJoystickPos(newScreenPos);
+        }
 
-        base.OnPointerUp(eventData);
+        public override void OnPointerUp(PointerEventData eventData)
+        {
+            if (!AlwaysVisible)
+                background.gameObject.SetActive(false);
+
+            SetJoystickPos(new Vector3(Screen.width / 2.0f, Screen.height * BaseFixedDistance));
+
+            base.OnPointerUp(eventData);
+        }
     }
 }

@@ -1,33 +1,36 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(FloatingJoystick))]
-public class FloatingJoystickEditor : JoystickEditor
+namespace UMVC
 {
-    private SerializedProperty threshold;
-    private SerializedProperty alwaysVisible;
-    private SerializedProperty baseDistance;
-
-    protected override void OnEnable()
+    [CustomEditor(typeof(FloatingJoystick))]
+    public class FloatingJoystickEditor : JoystickEditor
     {
-        threshold = serializedObject.FindProperty("JoystickBaseMoveThreshold");
-        alwaysVisible = serializedObject.FindProperty("AlwaysVisible");
-        baseDistance = serializedObject.FindProperty("BaseFixedDistance");
+        private SerializedProperty threshold;
+        private SerializedProperty alwaysVisible;
+        private SerializedProperty baseDistance;
 
-        base.OnEnable();
-    }
+        protected override void OnEnable()
+        {
+            threshold = serializedObject.FindProperty("JoystickBaseMoveThreshold");
+            alwaysVisible = serializedObject.FindProperty("AlwaysVisible");
+            baseDistance = serializedObject.FindProperty("BaseFixedDistance");
 
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
+            base.OnEnable();
+        }
 
-        serializedObject.Update();
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
 
-        EditorGUILayout.PropertyField(threshold, new GUIContent("Distance Threshold", "The distance that can be between finger and joystick."));
-        EditorGUILayout.PropertyField(alwaysVisible, new GUIContent("Always Visible", "Keep joystick always visible on the screen."));
-        EditorGUILayout.PropertyField(baseDistance, new GUIContent("Distance Bottom Center", "Keep joystick at bottom center by given distance."));
+            serializedObject.Update();
 
-        serializedObject.ApplyModifiedProperties();
+            EditorGUILayout.PropertyField(threshold, new GUIContent("Distance Threshold", "The distance that can be between finger and joystick."));
+            EditorGUILayout.PropertyField(alwaysVisible, new GUIContent("Always Visible", "Keep joystick always visible on the screen."));
+            EditorGUILayout.PropertyField(baseDistance, new GUIContent("Distance Bottom Center", "Keep joystick at bottom center by given distance."));
 
+            serializedObject.ApplyModifiedProperties();
+
+        }
     }
 }

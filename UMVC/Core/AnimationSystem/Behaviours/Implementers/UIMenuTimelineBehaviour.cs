@@ -2,61 +2,64 @@
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-public class UIMenuTimelineBehaviour : UIMenuAnimationBehaviourImplementer
+namespace UMVC
 {
-    public PlayableDirector Director;
-    public TimelineAsset IntroTimeline;
-    public TimelineAsset OutroTimeline;
-
-    Action _callback;
-
-    public override void PlayIntro(Action callback)
+    public class UIMenuTimelineBehaviour : UIMenuAnimationBehaviourImplementer
     {
-        Director.stopped -= OnPlayableStopped;
-        Director.Stop();
+        public PlayableDirector Director;
+        public TimelineAsset IntroTimeline;
+        public TimelineAsset OutroTimeline;
 
-        _callback = callback;
+        Action _callback;
 
-        Director.stopped += OnPlayableStopped;
+        public override void PlayIntro(Action callback)
+        {
+            Director.stopped -= OnPlayableStopped;
+            Director.Stop();
 
-        Director.Play(IntroTimeline);
-    }
+            _callback = callback;
 
-    public override void PlayOutro(Action callback)
-    {
-        Director.stopped -= OnPlayableStopped;
-        Director.Stop();
+            Director.stopped += OnPlayableStopped;
 
-        _callback = callback;
+            Director.Play(IntroTimeline);
+        }
 
-        Director.stopped += OnPlayableStopped;
+        public override void PlayOutro(Action callback)
+        {
+            Director.stopped -= OnPlayableStopped;
+            Director.Stop();
 
-        Director.Play(OutroTimeline);
-    }
+            _callback = callback;
 
-    public override void FinishSequence(Action callback)
-    {
-        Director.time = Director.duration;
+            Director.stopped += OnPlayableStopped;
 
-        Director.Evaluate();
+            Director.Play(OutroTimeline);
+        }
 
-        if (_callback != null)
-            _callback();
-    }
+        public override void FinishSequence(Action callback)
+        {
+            Director.time = Director.duration;
 
-    private void OnPlayableStopped(PlayableDirector stoppedDirector)
-    {
-        if (_callback != null)
-            _callback();
-    }
+            Director.Evaluate();
 
-    public override void ResetAnim()
-    {
-        Director.Play(IntroTimeline);
-        Director.Stop();
+            if (_callback != null)
+                _callback();
+        }
 
-        Director.time = 0;
+        private void OnPlayableStopped(PlayableDirector stoppedDirector)
+        {
+            if (_callback != null)
+                _callback();
+        }
 
-        Director.Evaluate();
+        public override void ResetAnim()
+        {
+            Director.Play(IntroTimeline);
+            Director.Stop();
+
+            Director.time = 0;
+
+            Director.Evaluate();
+        }
     }
 }

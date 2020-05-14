@@ -1,61 +1,64 @@
 ﻿using UnityEngine;
 
-public enum ERectTransEnvelopeMode
+namespace UMVC
 {
-    AlwaysUpdate,
-    OnlyOnChange,
-}
-
-[ExecuteInEditMode]
-public class RectTransfromEnvelopeElement : MonoBehaviour
-{
-    public RectTransform FromTransform;
-    public RectTransform ToTransform;
-
-    public ERectTransEnvelopeMode UpdateMode;
-
-    public float XOffset, YOffset;
-
-    private void Awake()
+    public enum ERectTransEnvelopeMode
     {
-        if (ToTransform == null || FromTransform == null)
-            return;
-
-        UpdateAnchors();
+        AlwaysUpdate,
+        OnlyOnChange,
     }
 
-    private void UpdateAnchors()
+    [ExecuteInEditMode]
+    public class RectTransfromEnvelopeElement : MonoBehaviour
     {
-        ToTransform.anchorMin = FromTransform.anchorMin;
-        ToTransform.anchorMax = FromTransform.anchorMax;
-    }
+        public RectTransform FromTransform;
+        public RectTransform ToTransform;
 
-    private void LateUpdate()
-    {
-        if (FromTransform == null || ToTransform == null)
-            return;
+        public ERectTransEnvelopeMode UpdateMode;
 
-        if (!CheckForUpdateMode())
-            return;
+        public float XOffset, YOffset;
 
-        UpdateAnchors();
-
-        Rect fromRect = FromTransform.rect;
-
-        ToTransform.sizeDelta = new Vector2(fromRect.width - XOffset, fromRect.height - YOffset);
-        ToTransform.anchoredPosition = FromTransform.anchoredPosition;
-    }
-
-    private bool CheckForUpdateMode()
-    {
-        switch(UpdateMode)
+        private void Awake()
         {
-            case ERectTransEnvelopeMode.OnlyOnChange:
-                return FromTransform.hasChanged;
-            case ERectTransEnvelopeMode.AlwaysUpdate:
-                return true;
-            default:
-                return true;
+            if (ToTransform == null || FromTransform == null)
+                return;
+
+            UpdateAnchors();
+        }
+
+        private void UpdateAnchors()
+        {
+            ToTransform.anchorMin = FromTransform.anchorMin;
+            ToTransform.anchorMax = FromTransform.anchorMax;
+        }
+
+        private void LateUpdate()
+        {
+            if (FromTransform == null || ToTransform == null)
+                return;
+
+            if (!CheckForUpdateMode())
+                return;
+
+            UpdateAnchors();
+
+            Rect fromRect = FromTransform.rect;
+
+            ToTransform.sizeDelta = new Vector2(fromRect.width - XOffset, fromRect.height - YOffset);
+            ToTransform.anchoredPosition = FromTransform.anchoredPosition;
+        }
+
+        private bool CheckForUpdateMode()
+        {
+            switch (UpdateMode)
+            {
+                case ERectTransEnvelopeMode.OnlyOnChange:
+                    return FromTransform.hasChanged;
+                case ERectTransEnvelopeMode.AlwaysUpdate:
+                    return true;
+                default:
+                    return true;
+            }
         }
     }
 }

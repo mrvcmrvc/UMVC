@@ -1,27 +1,30 @@
 ﻿using UnityEngine;
 
-[ExecuteInEditMode, RequireComponent(typeof(Canvas))]
-public class CanvasLookAtCameraScript : MonoBehaviour
+namespace UMVC
 {
-    public bool LookToDir;
-
-    private void Update()
+    [ExecuteInEditMode, RequireComponent(typeof(Canvas))]
+    public class CanvasLookAtCameraScript : MonoBehaviour
     {
-        transform.LookAt(Camera.main.transform);
+        public bool LookToDir;
 
-        if(LookToDir)
+        private void Update()
         {
-            Quaternion quaternion = transform.rotation;
-            Quaternion newQuaternion = Quaternion.Euler(-1 * Camera.main.transform.localRotation.eulerAngles.x, 180f, quaternion.eulerAngles.z);
-            transform.rotation = newQuaternion;
+            transform.LookAt(Camera.main.transform);
+
+            if (LookToDir)
+            {
+                Quaternion quaternion = transform.rotation;
+                Quaternion newQuaternion = Quaternion.Euler(-1 * Camera.main.transform.localRotation.eulerAngles.x, 180f, quaternion.eulerAngles.z);
+                transform.rotation = newQuaternion;
+            }
         }
-    }
 
-    private void OnEnable()
-    {
-        Canvas targetCanvas = GetComponent<Canvas>();
+        private void OnEnable()
+        {
+            Canvas targetCanvas = GetComponent<Canvas>();
 
-        if (!targetCanvas.renderMode.Equals(RenderMode.WorldSpace))
-            Debug.LogWarning("The canvas on the " + gameObject.name + " must be set to world space rendering, to be able to use look at functionality!");
+            if (!targetCanvas.renderMode.Equals(RenderMode.WorldSpace))
+                Debug.LogWarning("The canvas on the " + gameObject.name + " must be set to world space rendering, to be able to use look at functionality!");
+        }
     }
 }

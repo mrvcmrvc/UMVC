@@ -1,59 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class UIMenuSpriteAnimationBehaviour : UIMenuAnimationBehaviourImplementer
+namespace UMVC
 {
-    public List<UISpriteAnimation> SpriteAnimList;
-
-    private int _remAnimCount;
-
-    private Action _callback;
-
-    public override void PlayIntro(Action callback)
+    public class UIMenuSpriteAnimationBehaviour : UIMenuAnimationBehaviourImplementer
     {
-        _remAnimCount = SpriteAnimList.FindAll(s => !s.Loop).Count;
-        
-        _callback = callback;
+        public List<UISpriteAnimation> SpriteAnimList;
 
-        SpriteAnimList.ForEach(a => a.Play(OnSpriteAnimFinished, true));
-    }
+        private int _remAnimCount;
 
-    public override void PlayOutro(Action callback)
-    {
-        _callback = callback;
+        private Action _callback;
 
-        _remAnimCount = 1;
+        public override void PlayIntro(Action callback)
+        {
+            _remAnimCount = SpriteAnimList.FindAll(s => !s.Loop).Count;
 
-        OnSpriteAnimFinished();
-    }
+            _callback = callback;
 
-    public override void FinishSequence(Action callback)
-    {
-        _callback = callback;
+            SpriteAnimList.ForEach(a => a.Play(OnSpriteAnimFinished, true));
+        }
 
-        SpriteAnimList.FindAll(s => !s.Loop).ForEach(s => s.Finish());
+        public override void PlayOutro(Action callback)
+        {
+            _callback = callback;
 
-        _remAnimCount = 1;
+            _remAnimCount = 1;
 
-        OnSpriteAnimFinished();
-    }
+            OnSpriteAnimFinished();
+        }
 
-    public override void ResetAnim()
-    {
-        SpriteAnimList.ForEach(a => a.Stop());
-    }
+        public override void FinishSequence(Action callback)
+        {
+            _callback = callback;
 
-    protected virtual void OnSpriteAnimFinished()
-    {
-        _remAnimCount--;
+            SpriteAnimList.FindAll(s => !s.Loop).ForEach(s => s.Finish());
 
-        if (_remAnimCount <= 0)
-            CheckForCallback();
-    }
+            _remAnimCount = 1;
 
-    protected virtual void CheckForCallback()
-    {
-        if (_callback != null)
-            _callback();
+            OnSpriteAnimFinished();
+        }
+
+        public override void ResetAnim()
+        {
+            SpriteAnimList.ForEach(a => a.Stop());
+        }
+
+        protected virtual void OnSpriteAnimFinished()
+        {
+            _remAnimCount--;
+
+            if (_remAnimCount <= 0)
+                CheckForCallback();
+        }
+
+        protected virtual void CheckForCallback()
+        {
+            if (_callback != null)
+                _callback();
+        }
     }
 }

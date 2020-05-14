@@ -2,53 +2,56 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIAnimSequence : MonoBehaviour
+namespace UMVC
 {
-    public List<UIMenuAnimationBehaviourImplementer> AnimList;
-
-    public Action Callback { get; private set; }
-
-    protected virtual void Awake()
+    public class UIAnimSequence : MonoBehaviour
     {
-        ResetSequence();
-    }
+        public List<UIMenuAnimationBehaviourImplementer> AnimList;
 
-    public void PlayIntroSequence(Action callback)
-    {
-        Callback = callback;
+        public Action Callback { get; private set; }
 
-        AnimList.ForEach(s => s.PlayIntro(OnSequenceFinished));
-    }
+        protected virtual void Awake()
+        {
+            ResetSequence();
+        }
 
-    public void PlayOutroSequence(Action callback)
-    {
-        Callback = callback;
+        public void PlayIntroSequence(Action callback)
+        {
+            Callback = callback;
 
-        AnimList.ForEach(s => s.PlayOutro(OnSequenceFinished));
-    }
+            AnimList.ForEach(s => s.PlayIntro(OnSequenceFinished));
+        }
 
-    protected virtual void OnSequenceFinished()
-    {
-        if (AnimList.FindAll(s => s.IsPlaying).Count == 0)
-            CheckForCallback();
-    }
+        public void PlayOutroSequence(Action callback)
+        {
+            Callback = callback;
 
-    protected virtual void CheckForCallback()
-    {
-        if(Callback != null)
-            Callback();
-    }
+            AnimList.ForEach(s => s.PlayOutro(OnSequenceFinished));
+        }
 
-    public virtual void ResetSequence()
-    {
-        AnimList.ForEach(s => s.ResetAnim());
-    }
+        protected virtual void OnSequenceFinished()
+        {
+            if (AnimList.FindAll(s => s.IsPlaying).Count == 0)
+                CheckForCallback();
+        }
 
-    public virtual void FinishSequence(bool canCallback)
-    {
-        if (canCallback)
-            AnimList.ForEach(s => s.FinishSequence(Callback));
-        else
-            AnimList.ForEach(s => s.FinishSequence(null));
+        protected virtual void CheckForCallback()
+        {
+            if (Callback != null)
+                Callback();
+        }
+
+        public virtual void ResetSequence()
+        {
+            AnimList.ForEach(s => s.ResetAnim());
+        }
+
+        public virtual void FinishSequence(bool canCallback)
+        {
+            if (canCallback)
+                AnimList.ForEach(s => s.FinishSequence(Callback));
+            else
+                AnimList.ForEach(s => s.FinishSequence(null));
+        }
     }
 }

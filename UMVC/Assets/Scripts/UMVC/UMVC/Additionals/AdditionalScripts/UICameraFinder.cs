@@ -1,68 +1,72 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Canvas))]
-public class UICameraFinder : MonoBehaviour
+namespace UMVC
 {
-    public RenderMode CanvasRenderMode;
-    public float PlaneDistance;
-
-    public bool ByTag;
-    public bool ByLayer;
-
-    public string Tag;
-    public int Layer;
-
-    private void Awake()
+    [RequireComponent(typeof(Canvas))]
+    public class UICameraFinder : MonoBehaviour
     {
-        Canvas targetCanvas = GetComponent<Canvas>();
-        targetCanvas.renderMode = CanvasRenderMode;
-        targetCanvas.planeDistance = PlaneDistance;
+        public RenderMode CanvasRenderMode;
+        public float PlaneDistance;
 
-        if (ByTag)
-            targetCanvas.worldCamera = CheckByTag();
-        else if (ByLayer)
-            targetCanvas.worldCamera = CheckByLayer();
-        else
-            targetCanvas.worldCamera = CheckByBoth();
-    }
+        public bool ByTag;
+        public bool ByLayer;
 
-    private Camera CheckByTag()
-    {
-        Camera[] allActiveCamColl = FindObjectsOfType<Camera>();
+        public string Tag;
+        public int Layer;
 
-        for(int i = 0; i < allActiveCamColl.Length; i++)
+        private void Awake()
         {
-            if (allActiveCamColl[i].tag.Equals(Tag))
-                return allActiveCamColl[i];
+            Canvas targetCanvas = GetComponent<Canvas>();
+            targetCanvas.renderMode = CanvasRenderMode;
+            targetCanvas.planeDistance = PlaneDistance;
+
+            if (ByTag)
+                targetCanvas.worldCamera = CheckByTag();
+            else if (ByLayer)
+                targetCanvas.worldCamera = CheckByLayer();
+            else
+                targetCanvas.worldCamera = CheckByBoth();
         }
 
-        return null;
-    }
-
-    private Camera CheckByLayer()
-    {
-        Camera[] allActiveCamColl = FindObjectsOfType<Camera>();
-
-        for (int i = 0; i < allActiveCamColl.Length; i++)
+        private Camera CheckByTag()
         {
-            if (allActiveCamColl[i].gameObject.layer.Equals(Layer))
-                return allActiveCamColl[i];
+            Camera[] allActiveCamColl = FindObjectsOfType<Camera>();
+
+            for (int i = 0; i < allActiveCamColl.Length; i++)
+            {
+                if (allActiveCamColl[i].tag.Equals(Tag))
+                    return allActiveCamColl[i];
+            }
+
+            return null;
         }
 
-        return null;
-    }
-
-    private Camera CheckByBoth()
-    {
-        Camera[] allActiveCamColl = FindObjectsOfType<Camera>();
-
-        for (int i = 0; i < allActiveCamColl.Length; i++)
+        private Camera CheckByLayer()
         {
-            if (allActiveCamColl[i].tag.Equals(Tag)
-                && allActiveCamColl[i].gameObject.layer.Equals(Layer))
-                return allActiveCamColl[i];
+            Camera[] allActiveCamColl = FindObjectsOfType<Camera>();
+
+            for (int i = 0; i < allActiveCamColl.Length; i++)
+            {
+                if (allActiveCamColl[i].gameObject.layer.Equals(Layer))
+                    return allActiveCamColl[i];
+            }
+
+            return null;
         }
 
-        return null;
+        private Camera CheckByBoth()
+        {
+            Camera[] allActiveCamColl = FindObjectsOfType<Camera>();
+
+            for (int i = 0; i < allActiveCamColl.Length; i++)
+            {
+                if (allActiveCamColl[i].tag.Equals(Tag)
+                    && allActiveCamColl[i].gameObject.layer.Equals(Layer))
+                    return allActiveCamColl[i];
+            }
+
+            return null;
+        }
     }
+
 }

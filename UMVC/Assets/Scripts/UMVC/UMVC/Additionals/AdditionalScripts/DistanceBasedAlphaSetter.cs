@@ -1,48 +1,51 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Graphic))]
-public class DistanceBasedAlphaSetter : MonoBehaviour
+namespace UMVC
 {
-    public Transform TargetTransform;
-    public float Coef;
-    public float MinAlpha;
-    public float MaxAlpha;
-
-    private Graphic _graphic;
-    private float _initialDist;
-
-    private void Start()
+    [RequireComponent(typeof(Graphic))]
+    public class DistanceBasedAlphaSetter : MonoBehaviour
     {
-        if (_graphic != null)
-            return;
+        public Transform TargetTransform;
+        public float Coef;
+        public float MinAlpha;
+        public float MaxAlpha;
 
-        _graphic = GetComponent<Graphic>();
+        private Graphic _graphic;
+        private float _initialDist;
 
-        _initialDist = Vector3.Distance(transform.position, TargetTransform.position);
-    }
+        private void Start()
+        {
+            if (_graphic != null)
+                return;
 
-    private void OnEnable()
-    {
-        Update();
-    }
+            _graphic = GetComponent<Graphic>();
 
-    private void Update()
-    {
-        if (_graphic == null)
-            return;
+            _initialDist = Vector3.Distance(transform.position, TargetTransform.position);
+        }
 
-        Color curColor = _graphic.color;
+        private void OnEnable()
+        {
+            Update();
+        }
 
-        float curDist = Vector3.Distance(transform.position, TargetTransform.position);
-        float distCoef = curDist / _initialDist;
-        if (distCoef > 1)
-            distCoef = 1.0f;
+        private void Update()
+        {
+            if (_graphic == null)
+                return;
 
-        distCoef = 1 - distCoef;
+            Color curColor = _graphic.color;
 
-        curColor.a = MinAlpha + (distCoef * Coef * (MaxAlpha - MinAlpha));
+            float curDist = Vector3.Distance(transform.position, TargetTransform.position);
+            float distCoef = curDist / _initialDist;
+            if (distCoef > 1)
+                distCoef = 1.0f;
 
-        _graphic.color = curColor;
+            distCoef = 1 - distCoef;
+
+            curColor.a = MinAlpha + (distCoef * Coef * (MaxAlpha - MinAlpha));
+
+            _graphic.color = curColor;
+        }
     }
 }

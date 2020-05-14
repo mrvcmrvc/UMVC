@@ -1,46 +1,49 @@
 ﻿using TMPro;
 using UnityEngine;
 
-public class TextMeshUINextPageIndicator : MonoBehaviour
+namespace UMVC
 {
-    public Animator NextPageIndicatorAnim;
-
-    private TextMeshProUGUI _textMesh;
-    private const string NEXT_PAGE_INDICATOR_ANIM_NAME = "NextPageIndicatorAnim";
-
-    private void Awake()
+    public class TextMeshUINextPageIndicator : MonoBehaviour
     {
-        _textMesh = GetComponent<TextMeshProUGUI>();
-    }
+        public Animator NextPageIndicatorAnim;
 
-    public void CheckForNextPageIndicator()
-    {
-        int curPage = _textMesh.pageToDisplay;
-        int totalPage = _textMesh.textInfo.pageCount;
+        private TextMeshProUGUI _textMesh;
+        private const string NEXT_PAGE_INDICATOR_ANIM_NAME = "NextPageIndicatorAnim";
 
-        if (curPage < totalPage)
-            ActivateIndicator();
-        else
-            DeactivateIndicator();
-    }
+        private void Awake()
+        {
+            _textMesh = GetComponent<TextMeshProUGUI>();
+        }
 
-    /// <summary>
-    /// Manually deactivates indicator
-    /// </summary>
-    public void DeactivateIndicator()
-    {
-        NextPageIndicatorAnim.StopPlayback();
+        public void CheckForNextPageIndicator()
+        {
+            int curPage = _textMesh.pageToDisplay;
+            int totalPage = _textMesh.textInfo.pageCount;
 
-        NextPageIndicatorAnim.gameObject.SetActive(false);
-    }
+            if (curPage < totalPage)
+                ActivateIndicator();
+            else
+                DeactivateIndicator();
+        }
 
-    /// <summary>
-    /// Manually activates indicator
-    /// </summary>
-    public void ActivateIndicator()
-    {
-        NextPageIndicatorAnim.gameObject.SetActive(true);
+        /// <summary>
+        /// Manually deactivates indicator
+        /// </summary>
+        public void DeactivateIndicator()
+        {
+            NextPageIndicatorAnim.StopPlayback();
 
-        NextPageIndicatorAnim.Play(NEXT_PAGE_INDICATOR_ANIM_NAME);
+            NextPageIndicatorAnim.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Manually activates indicator
+        /// </summary>
+        public void ActivateIndicator()
+        {
+            NextPageIndicatorAnim.gameObject.SetActive(true);
+
+            NextPageIndicatorAnim.Play(NEXT_PAGE_INDICATOR_ANIM_NAME);
+        }
     }
 }

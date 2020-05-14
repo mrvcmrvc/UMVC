@@ -3,26 +3,29 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 
-[System.Serializable]
-public class AnimationEventBinder
+namespace UMVC
 {
-    public int AnimEventID;
-    public UnityEvent Event;
-
-    public void Callback()
+    [System.Serializable]
+    public class AnimationEventBinder
     {
-        Event.Invoke();
+        public int AnimEventID;
+        public UnityEvent Event;
+
+        public void Callback()
+        {
+            Event.Invoke();
+        }
     }
-}
 
-public class AnimationEventTransmitter : MonoBehaviour
-{
-    public bool IsDebugEnabled;
-
-    public List<AnimationEventBinder> EventBinderList;
-
-    public void TriggerEvent(int id)
+    public class AnimationEventTransmitter : MonoBehaviour
     {
-        EventBinderList.Single(val => val.AnimEventID == id).Callback();
+        public bool IsDebugEnabled;
+
+        public List<AnimationEventBinder> EventBinderList;
+
+        public void TriggerEvent(int id)
+        {
+            EventBinderList.Single(val => val.AnimEventID == id).Callback();
+        }
     }
 }

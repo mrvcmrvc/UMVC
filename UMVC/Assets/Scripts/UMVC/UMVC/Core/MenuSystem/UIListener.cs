@@ -1,29 +1,32 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public abstract class UIListener : MonoBehaviour
+namespace UMVC
 {
-    public static bool CanEscape = true;
-
-    protected virtual void Awake()
+    public abstract class UIListener : MonoBehaviour
     {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
-        UnityEngine.SceneManagement.SceneManager.sceneUnloaded += OnSceneUnloaded;
-    }
+        public static bool CanEscape = true;
 
-    protected virtual void OnSceneLoaded(UnityEngine.SceneManagement.Scene loadedScene, LoadSceneMode loadSceneMode)
-    {
-    }
+        protected virtual void Awake()
+        {
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+            UnityEngine.SceneManagement.SceneManager.sceneUnloaded += OnSceneUnloaded;
+        }
 
-    protected virtual void OnSceneUnloaded(UnityEngine.SceneManagement.Scene loadedScene)
-    {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
-        UnityEngine.SceneManagement.SceneManager.sceneUnloaded -= OnSceneUnloaded;
-    }
+        protected virtual void OnSceneLoaded(UnityEngine.SceneManagement.Scene loadedScene, LoadSceneMode loadSceneMode)
+        {
+        }
 
-    protected virtual void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) && CanEscape)
-            UIMenuManager.Instance.OnBackPressed();
+        protected virtual void OnSceneUnloaded(UnityEngine.SceneManagement.Scene loadedScene)
+        {
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+            UnityEngine.SceneManagement.SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        }
+
+        protected virtual void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) && CanEscape)
+                UIMenuManager.Instance.OnBackPressed();
+        }
     }
 }

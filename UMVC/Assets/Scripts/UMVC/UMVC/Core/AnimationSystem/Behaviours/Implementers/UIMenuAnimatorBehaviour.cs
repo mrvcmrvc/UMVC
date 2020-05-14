@@ -1,56 +1,59 @@
 ﻿using System;
 using UnityEngine;
 
-public class UIMenuAnimatorBehaviour : UIMenuAnimationBehaviourImplementer
+namespace UMVC
 {
-    public Animator Animator;
-
-    private const string ENTRANCE_ANIM = "EntranceAnim";
-    private const string EXIT_ANIM = "ExitAnim";
-
-    private string _activeAnimName = "";
-
-    Action _callback;
-
-    public override void PlayIntro(Action callback)
+    public class UIMenuAnimatorBehaviour : UIMenuAnimationBehaviourImplementer
     {
-        _activeAnimName = ENTRANCE_ANIM;
+        public Animator Animator;
 
-        PlayAnim(callback);
-    }
+        private const string ENTRANCE_ANIM = "EntranceAnim";
+        private const string EXIT_ANIM = "ExitAnim";
 
-    public override void PlayOutro(Action callback)
-    {
-        _activeAnimName = EXIT_ANIM;
+        private string _activeAnimName = "";
 
-        PlayAnim(callback);
-    }
+        Action _callback;
 
-    private void PlayAnim(Action callback)
-    {
-        Animator.UnregisterOnComplete(this, _callback);
+        public override void PlayIntro(Action callback)
+        {
+            _activeAnimName = ENTRANCE_ANIM;
 
-        _callback = callback;
+            PlayAnim(callback);
+        }
 
-        Animator.Play(_activeAnimName);
+        public override void PlayOutro(Action callback)
+        {
+            _activeAnimName = EXIT_ANIM;
 
-        Animator.OnComplete(this, callback);
-    }
+            PlayAnim(callback);
+        }
 
-    public override void FinishSequence(Action callback)
-    {
-        Animator.UnregisterOnComplete(this, _callback);
+        private void PlayAnim(Action callback)
+        {
+            Animator.UnregisterOnComplete(this, _callback);
 
-        Animator.Play(ENTRANCE_ANIM, 0, 1.0f);
+            _callback = callback;
 
-        if (callback != null)
-            callback();
-    }
+            Animator.Play(_activeAnimName);
 
-    public override void ResetAnim()
-    {
-        Animator.UnregisterOnComplete(this, _callback);
+            Animator.OnComplete(this, callback);
+        }
 
-        Animator.Play(ENTRANCE_ANIM, 0, 0f);
+        public override void FinishSequence(Action callback)
+        {
+            Animator.UnregisterOnComplete(this, _callback);
+
+            Animator.Play(ENTRANCE_ANIM, 0, 1.0f);
+
+            if (callback != null)
+                callback();
+        }
+
+        public override void ResetAnim()
+        {
+            Animator.UnregisterOnComplete(this, _callback);
+
+            Animator.Play(ENTRANCE_ANIM, 0, 0f);
+        }
     }
 }

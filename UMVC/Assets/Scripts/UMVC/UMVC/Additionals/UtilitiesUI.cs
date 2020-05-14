@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
-public static partial class UMVCUtilities
+namespace UMVC
 {
-    public static Rect ScreenSafeArea()
+    public static partial class UMVCUtilities
     {
-        return Screen.safeArea;
+        public static Rect ScreenSafeArea()
+        {
+            return Screen.safeArea;
+        }
     }
 }

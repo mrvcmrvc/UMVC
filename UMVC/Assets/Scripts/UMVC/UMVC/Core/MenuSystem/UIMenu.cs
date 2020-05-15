@@ -11,7 +11,6 @@ namespace UMVC
         public static Action<UIMenu> OnUIMenuDestroyed;
         #endregion
 
-        [SerializeField] private bool _activateInAwake;
         [SerializeField] private bool _disableMenusUnderneath;
         [SerializeField] private UIAnimSequence _uiMenuAnimation;
 
@@ -30,9 +29,6 @@ namespace UMVC
             RegisterActivationEvents(ActivateUI);
 
             Init();
-
-            if (_activateInAwake)
-                Activate();
 
             AwakeCustomActions();
         }

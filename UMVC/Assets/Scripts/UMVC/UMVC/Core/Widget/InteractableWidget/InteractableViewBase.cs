@@ -2,17 +2,19 @@
 
 namespace UMVC
 {
-    public abstract class ViewBase<T1, TPLD, TViewValue> : MonoBehaviour
-    where T1 : AspectAdaptorBase<TPLD, TViewValue>
+    public abstract class InteractableViewBase<T1, TPLD, TViewValue> : MonoBehaviour
+    where T1 : InteractableAspectAdaptorBase<TPLD, TViewValue>
     where TPLD : IPLDBase
     {
         [SerializeField] private T1 _adaptor;
 
         private void Awake()
         {
-            InitAdapter();
+            _adaptor.OnValueChanged += OnAdapterValueChanged;
 
             RegisterEvents();
+
+            AwakeCustomActions();
         }
 
         private void OnDestroy()
@@ -20,6 +22,8 @@ namespace UMVC
             _adaptor.OnValueChanged -= OnAdapterValueChanged;
 
             UnregisterEvents();
+
+            OnDestroyCustomActions();
         }
 
         private void RegisterEvents()
@@ -30,11 +34,6 @@ namespace UMVC
         private void UnregisterEvents()
         {
             UnregisterEventsCustomActions();
-        }
-
-        private void InitAdapter()
-        {
-            _adaptor.OnValueChanged += OnAdapterValueChanged;
         }
 
         private void OnAdapterValueChanged(TPLD pld)
@@ -50,5 +49,7 @@ namespace UMVC
         protected abstract void ParsePLD(TPLD pld);
         protected virtual void RegisterEventsCustomActions() { }
         protected virtual void UnregisterEventsCustomActions() { }
+        protected virtual void AwakeCustomActions() { }
+        protected virtual void OnDestroyCustomActions() { }
     }
 }

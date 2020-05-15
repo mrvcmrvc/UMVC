@@ -1,12 +1,12 @@
 {
     "name": "com.uiframework.umvc",
     "displayName": "Unity UI MVC Framework",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "unity": "2019.1",
     "description": "Infrastructure for Unity UI based on MVC and MVP.",
     "dependencies" : {
-        "com.unity.textmeshpro": "2.0.1",
-        "com.unity.timeline": "1.2.14",
-        "com.uitweening.uitweening": "1.0.0"
+        "com.unity.textmeshpro": "2.x.x",
+        "com.unity.timeline": "1.x.x",
+        "com.uitweening.uitweening": "1.x.x"
 	}
 }

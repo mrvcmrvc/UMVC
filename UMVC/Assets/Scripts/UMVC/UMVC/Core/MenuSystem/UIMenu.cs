@@ -11,7 +11,9 @@ namespace UMVC
         public static Action<UIMenu> OnUIMenuDestroyed;
         #endregion
 
+        [SerializeField] private Canvas _canvas;
         [SerializeField] private bool _disableMenusUnderneath;
+        [SerializeField] private bool _updateViewsOnActivation;
         [SerializeField] private UIAnimSequence _uiMenuAnimation;
 
         public bool DisableMenusUnderneath { get { return _disableMenusUnderneath; } }
@@ -30,6 +32,8 @@ namespace UMVC
 
             Init();
 
+            _canvas.enabled = false;
+
             AwakeCustomActions();
         }
 
@@ -44,13 +48,13 @@ namespace UMVC
 
         protected void Init()
         {
-            gameObject.SetActive(false);
-
             IsPreDeactivationFinished = true;
             IsPostDeactivationFinished = true;
 
             IsPreActivationFinished = false;
             IsPostActivationFinished = false;
+
+            InitCustomActions();
 
             OnUIMenuInitCompleted?.Invoke(this);
         }
@@ -76,6 +80,7 @@ namespace UMVC
         }
 
         protected virtual void AwakeCustomActions() { }
+        protected virtual void InitCustomActions() { }
         protected virtual void OnDestroyCustomActions() { }
 
         /// <summary>
@@ -96,7 +101,7 @@ namespace UMVC
         #region Activation / Deactivation
         public virtual void Activate()
         {
-            gameObject.SetActive(true);
+            _canvas.enabled = true;
 
             if (_deactivateRoutine != null)
                 StopCoroutine(_deactivateRoutine);
@@ -108,13 +113,17 @@ namespace UMVC
             StartCoroutine(_activateRoutine);
         }
 
-        IEnumerator ActivateRoutine()
+        private IEnumerator ActivateRoutine()
         {
             IsPreDeactivationFinished = false;
             IsPostDeactivationFinished = false;
 
             yield return StartCoroutine(PreActivateAdditional());
             IsPreActivationFinished = true;
+
+            AspectAdaptorBase[] adapterBaseColl = GetComponentsInChildren<AspectAdaptorBase>();
+            for (int i = 0; i < adapterBaseColl.Length; i++)
+                adapterBaseColl[i].UpdateViewManually();
 
             OnPreActivation?.Invoke(this);
 
@@ -149,7 +158,7 @@ namespace UMVC
             StartCoroutine(_deactivateRoutine);
         }
 
-        IEnumerator DeactivateRoutine()
+        private IEnumerator DeactivateRoutine()
         {
             IsPreActivationFinished = false;
             IsPostActivationFinished = false;
@@ -173,7 +182,7 @@ namespace UMVC
             StartCoroutine(PostDeactivateAdditional());
             IsPostDeactivationFinished = true;
 
-            gameObject.SetActive(false);
+            _canvas.enabled = false;
 
             OnPostDeactivation?.Invoke(this);
         }
